@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "inventario-ifal": {
+      "hosting": {
+        "inventario-admin": [
+          "inventario-ifal"
+        ]
+      }
+    }
+  }
+}

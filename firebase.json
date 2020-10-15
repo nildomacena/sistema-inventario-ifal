@@ -1,0 +1,19 @@
+{
+  "hosting": [
+    {
+      "target": "inventario-admin",
+      "public": "dist/inventario-admin",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ]
+}

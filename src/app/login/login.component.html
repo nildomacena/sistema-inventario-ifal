@@ -1,0 +1,69 @@
+<div class="wrapper fadeInDown" *ngIf="!signup">
+    <div id="formContent">
+        <!-- Tabs Titles -->
+
+        <!-- Icon -->
+        <div class="fadeIn first">
+            <img src="https://blog.grancursosonline.com.br/wp-content/uploads/2016/01/IFAL-001-1.png" id="icon"
+                alt="User Icon" />
+        </div>
+
+        <hr>
+        <form [formGroup]="formLogin" (ngSubmit)="onSubmitLogin()">
+            <input type="text" id="login" class="fadeIn second" name="login" placeholder="Email Institucional"
+                formControlName="email">
+            <input type="text" id="password" class="fadeIn third" name="login" placeholder="Senha"
+                formControlName="senha">
+            <br>
+            <hr>
+            <input type="submit" class="fadeIn fourth" value="Log In">
+        </form>
+
+        <!-- Remind Passowrd -->
+        <div id="formFooter">
+            <a class="underlineHover" (click)="toggleSignup()">Solicitar Acesso</a><br><br>
+            <a class="underlineHover" href="#">Esqueceu a senha?</a>
+        </div>
+
+    </div>
+</div>
+
+<div class="wrapper fadeInDown" *ngIf="signup">
+    <div id="formContent">
+        <!-- Tabs Titles -->
+
+        <!-- Icon -->
+        <div class="fadeIn first">
+            <img src="https://blog.grancursosonline.com.br/wp-content/uploads/2016/01/IFAL-001-1.png" id="icon"
+                alt="User Icon" />
+        </div>
+
+        <hr>
+        <form [formGroup]="formSignup" (ngSubmit)="onSubmitSignup()">
+            <input type="text" id="nome" class="fadeIn second" name="nome" placeholder="Nome" formControlName="nome">
+            <input type="text" id="email" class="fadeIn second" name="email" placeholder="Email Institucional"
+                formControlName="email">
+            <select id="campus" class="custom-select" formControlName="campus">
+                <option disabled selected value="">Selecione o seu campus</option>
+                <option *ngFor="let campus of campi" [value]="campus.id">{{campus.nome}}</option>
+            </select>
+            <input type="text" id="password" class="fadeIn third" name="login" placeholder="Senha"
+                formControlName="senha">
+            <input type="text" id="confirmPassword" class="fadeIn third" name="login" placeholder="Repita a Senha"
+                formControlName="confirmaSenha">
+            <br>
+            <hr>
+
+            <input [disabled]="formSignup.invalid"
+                [ngClass]="{fadeIn: formSignup.invalid, fourth: formSignup.invalid, buttonDisabled:formSignup.invalid || carregando}"
+                type="submit" [value]="carregando? 'Salvando dados...': 'Solicitar Cadastro'">
+        </form>
+
+        <!-- Remind Passowrd -->
+        <div id="formFooter">
+            <a class="underlineHover" (click)="toggleSignup()">Fazer Login</a><br><br>
+            <a class="underlineHover" href="#">Esqueceu a senha?</a>
+        </div>
+
+    </div>
+</div>

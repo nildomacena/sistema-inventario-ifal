@@ -1,0 +1,136 @@
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card" style="margin-top: 30px; margin-bottom: 30px;">
+            <div class="card-header border-transparent">
+                <h3 class="card-title">Localidades cadastradas</h3>
+
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- TODO Paginar os registros -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table m-0">
+                        <thead>
+                            <tr>
+                                <!--  <th>Código</th> -->
+                                <th>Nome</th>
+                                <th>Status</th>
+                                <th>Bens cadastrados</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let localidade of localidades">
+                                <!-- <td><a
+                                        href="pages/examples/invoice.html">{{localidade.codigo? localidade.codigo: 'Sem código'}}</a>
+                                </td> -->
+                                <td><a class="link-localidade" style="cursor: pointer;" (click)="goToLocalidade(localidade)">{{localidade.nome}}</a></td>
+                                <!-- <span class="badge badge-warning">Pending</span> -->
+                                <td><span
+                                        [ngClass]="{'badge-danger': localidade.status == 0, 'badge-warning': localidade.status == 1, 'badge-success': localidade.status == 2}"
+                                        class="badge">{{localidade.statusString}}</span></td>
+                                <td>
+                                    <div class="sparkbar" data-color="#00a65a" data-height="20">
+                                        {{localidade.bens.length}}</div>
+                                </td>
+                            </tr>
+                            <!--  <tr>
+                                    <td><a href="pages/examples/invoice.html">11.18.07</a></td>
+                                    <td>
+                                        ÁREA COMUM_CABB
+                                    </td>
+                                    <td><span class="badge badge-warning">Com pendências</span></td>
+                                    <td>
+                                        <div class="sparkbar" data-color="#f39c12" data-height="20">25/25
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><a href="pages/examples/invoice.html">11.18.05.05</a></td>
+                                    <td>SALA PROFESSORES</td>
+                                    <td><span class="badge badge-danger">Não iniciado</span></td>
+                                    <td>
+                                        <div class="sparkbar" data-color="#f56954" data-height="20">0/12
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><a href="pages/examples/invoice.html">11.18.05.01</a></td>
+                                    <td>ALMOXARIFADO</td>
+                                    <td><span class="badge badge-success">Concluído</span></td>
+                                    <td>
+                                        <div class="sparkbar" data-color="#00c0ef" data-height="20">33/33
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><a href="pages/examples/invoice.html">11.18.05.05</a></td>
+                                    <td>SALA PROFESSORES</td>
+                                    <td><span class="badge badge-danger">Não iniciado</span></td>
+                                    <td>
+                                        <div class="sparkbar" data-color="#f39c12" data-height="20">0/17
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><a href="pages/examples/invoice.html">11.18.05.05</a></td>
+                                    <td>SALA PROFESSORES</td>
+                                    <td><span class="badge badge-danger">Não iniciado</span></td>
+                                    <td>
+                                        <div class="sparkbar" data-color="#f56954" data-height="20">0/9
+                                        </div>
+                                    </td>
+                                </tr> -->
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <button [disabled]="loading" href="javascript:void(0)" class="btn btn-sm btn-info float-left">Cadastrar
+                    nova Localidade</button>
+                <button [disabled]="loading" href="javascript:void(0)" class="btn btn-sm btn-secondary float-right"
+                    data-toggle="modal" data-target="#modal-default">Carregar arquivo CSV do
+                    Sipac</button>
+                <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button> -->
+            </div>
+            <!-- /.card-footer -->
+        </div>
+    </div>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }">
+    </ngx-loading>
+</div>
+
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Arquivo CSV</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="file" class="btn btn-primary" (change)="onFileChange($event)" />
+                <p *ngIf="localidades"><b>Localidades encontradas: {{localidades.length}}</b></p>
+                <!-- <p *ngIf="localidades" ><b>Bens encontrados: {{localidades.length}}</b></p> -->
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" [disabled]="!localidades || localidades.length == 0" class="btn btn-primary"
+                    (click)="salvarDados()">Salvar
+                    Dados</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
