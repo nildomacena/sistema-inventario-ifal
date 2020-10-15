@@ -14,7 +14,6 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 
-import { NgxLoadingModule } from 'ngx-loading';
 import { ToastrModule } from 'ngx-toastr';
 import { HomeComponent } from './home/home.component';
 import { NavComponent } from './nav/nav.component';
@@ -57,7 +56,6 @@ const firebaseConfig = {
     AngularFireAuthModule,
     ToastrModule.forRoot(),
     BrowserAnimationsModule,
-    NgxLoadingModule.forRoot({})
     
   ],
   providers: [],
