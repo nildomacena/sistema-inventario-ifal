@@ -1,1 +1,294 @@
-<p>localidade-detail works!</p>
+<div class="row container-fluid d-flex justify-content-center">
+    <div class="row">
+        <div class="col-12">
+            <!-- Custom Tabs -->
+            <div class="card card-localidade">
+                <div class="card-header d-flex p-0">
+                    <h3 class="card-title p-3">{{localidade.nome}}</h3>
+                    <ul class="nav nav-pills ml-auto p-2">
+                        <li class="nav-item"><a class="nav-link active" href="#tab_1" data-toggle="tab">Informações
+                                Gerais</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#tab_2" data-toggle="tab">Fotos Panorâmicas</a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="#tab_3" data-toggle="tab">Relatório</a></li>
+                    </ul>
+
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab_1" style="width: 70vw;">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <p><b>Nome da Localidade:</b> {{localidade.nome}}</p>
+                                    <p><b>Quantidade de bens cadastrados:</b> {{localidade.bens.length}}</p>
+                                    <p><b>Status:</b> {{localidade.statusString}}</p>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" (change)="toggleParticulares()" type="checkbox"
+                                            id="defaultCheck1">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                            Exibir bens particulares?
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" *ngIf="localidade.finalizada" [disabled]="salvando"
+                                (click)="reabrirLocalidade()" style="cursor: pointer; color: white;"
+                                class="btn btn-primary">{{salvando? 'SALVANDO DADOS...':'REABRIR LOCALIDADE'}}</button>
+                        </div>
+                        <!-- /.tab-pane -->
+                        <div class="tab-pane" id="tab_2">
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>Fotos Panorâmicas</h4>
+                                </div>
+                            </div>
+                            <div class="container-fluid">
+                                <div *ngIf="localidade.panoramica" class="d-flex justify-content-center">
+                                    <img class="img-relatorio" [src]="localidade.panoramica" alt="">
+                                </div>
+                                <div *ngIf="!localidade.panoramica" class="d-flex justify-content-center">
+                                    <h5>Ainda não foram registradas fotos panorâmicas para essa localidade</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.tab-pane -->
+                        <div class="tab-pane" id="tab_3">
+                            <h4>Relatório</h4>
+                            <div *ngIf="localidade.relatorio" class=" d-flex justify-content-center">
+                                <img class="img-relatorio" [src]="localidade.relatorio" alt="">
+                            </div>
+                            <p class="observacoes">
+                                <b>Observações: </b>
+                                {{localidade.observacoes?localidade.observacoes:'Sem observações'}}
+                            </p>
+                            <p class="observacoes" *ngIf="localidade.finalizadoPor">
+                                <b>Responsável: </b>
+                                {{localidade.finalizadoPor}}
+                            </p>
+                            <div *ngIf="!localidade.relatorio" class=" d-flex justify-content-center">
+                                <h5>Essa localidade não foi finalizada, portanto não possui relatório</h5>
+                            </div>
+                        </div>
+                        <!-- /.tab-pane -->
+                    </div>
+                    <!-- /.tab-content -->
+                </div><!-- /.card-body -->
+            </div>
+            <!-- ./card -->
+        </div>
+        <!-- /.col -->
+    </div>
+</div>
+<div class="row">
+    <div class="col col-xl-2 offset-xl-10">
+        <div class="btn-group">
+            <button type="button" [ngClass]="{'btn-info': exibicao == 'tabela'}" class="btn"
+                (click)="toggleExibicao('tabela')"><i class="fas fa-table"></i></button>
+            <button type="button" [ngClass]="{'btn-info': exibicao == 'cards'}" class="btn"
+                (click)="toggleExibicao('cards')"><i class="fas fa-image"></i></button>
+        </div>
+    </div>
+</div>
+<div class="row container-fluid d-flex justify-content-center" *ngIf=" exibicao == 'cards'">
+    <div *ngFor="let bem of bensFiltrados"
+        class="card card-bem col-12 col-sm-5 container-fluid d-flex justify-content-center" style="margin: 8px;">
+        <img class="card-img-top" [src]="bem.imagem" [alt]="bem.descricao">
+        <div class="card-body">
+            <h4 class="card-title">{{bem.descricao}} -
+                {{bem.patrimonio? bem.patrimonio:bem.bemParticular?'bem particular':'sem etiqueta'}}</h4>
+            <p class="card-text">
+                <b>Estado do bem: </b>{{bem.estadoBem == 'em_uso'?'em uso':bem.estadoBem}}<br>
+                <b>Indica para desfazimento? </b> {{bem.indicaDesfazimento?'Sim':'Não'}}<br>
+                <b>Número de série: </b>{{bem.numeroSerie}}<br>
+                <b>Cadastrado por: </b>{{bem.nomeUsuario}}<br>
+                <b>Observações: </b>{{bem.observacoes?bem.observacoes:'sem observações'}}
+            </p>
+        </div>
+        <div class="card-footer">
+            <a (click)="abrirModal(bem)" style="cursor: pointer; color: white;" class="btn btn-primary">DETALHES</a>
+        </div>
+    </div>
+</div>
+
+<div class="row" *ngIf="exibicao == 'tabela'">
+    <div class="col-12">
+        <div class="card card-localidade">
+            <div class="card-header">
+                <h3 class="card-title">Modelos Cadastrados</h3>
+
+                <div class="card-tools">
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <input type="text" name="table_search" class="form-control float-right" (keyup)="onSearch()"
+                            [(ngModel)]="pesquisa" placeholder="Pesquisar">
+
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0 container-fluid">
+                <table class="table table-head-fixed table-hover">
+                    <thead>
+                        <tr>
+                            <th>Patrimônio</th>
+                            <th>Descrição</th>
+                            <th>Bem particular?</th>
+                            <th>Indica para desfazimento?</th>
+                            <th>Cadastrado por</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="cursor: pointer;" *ngFor="let bem of bensFiltrados" (click)="abrirModal(bem)">
+                            <td>{{bem.patrimonio}}</td>
+                            <td>{{bem.descricao}}</td>
+                            <td>{{bem.bemParticular? 'Sim':'Não'}}</td>
+                            <td>{{bem.indicaDesfazimento? 'Sim':'Não'}}</td>
+                            <td>{{bem.nomeUsuario}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+<div *ngIf="bemSelecionado" class="modal" id="modalBem" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{bemSelecionado.descricao}} -
+                    {{bemSelecionado.patrimonio? bemSelecionado.patrimonio:bemSelecionado.bemParticular?'bem
+                    particular':'sem etiqueta'}}
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid  d-flex justify-content-center">
+                    <img class="imagem-modal" [src]="bemSelecionado.imagem" alt="">
+                </div>
+                <div *ngIf="!corrigir">
+                    <p class="card-text">
+                        <b>Estado do bem:
+                        </b>{{bemSelecionado.estadoBem == 'em_uso'?'em uso':bemSelecionado.estadoBem}}<br>
+                        <b>Indica para desfazimento? </b> {{bemSelecionado.indicaDesfazimento?'Sim':'Não'}}<br>
+                        <b>Número de série: </b>{{bemSelecionado.numeroSerie}}<br>
+                        <b>Cadastrado por: </b>{{bemSelecionado.nomeUsuario}}<br>
+                        <b>Observações: </b>{{bemSelecionado.observacoes?bemSelecionado.observacoes:'sem observações'}}
+                    </p>
+                </div>
+                <div *ngIf="corrigir" class="form-group">
+                    <label for="motivo-correcao">Motivo da correção</label>
+                    <textarea [(ngModel)]="motivoCorrecao" class="form-control" id="motivo-correcao"
+                        rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer" *ngIf="!corrigir">
+                <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button> -->
+                <button type="button" class="btn btn-danger" (click)="excluirBem()">Excluir Bem</button>
+                <button type="button" class="btn btn-warning" (click)="toggleCorrecao()">Solicitar correção</button>
+                <button type="button" class="btn btn-info" (click)="editarBem()" data-dismiss="modal"
+                    aria-label="Close">Editar Bem</button>
+            </div>
+            <div class="modal-footer" *ngIf="corrigir">
+                <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button> -->
+                <button type="button" class="btn btn-secondary" (click)="toggleCorrecao()">Cancelar</button>
+                <button (click)="solicitarCorrecao()"
+                    [disabled]="!motivoCorrecao || motivoCorrecao.length < 5 || salvando" type="button"
+                    class="btn btn-primary">{{salvando? 'Salvando
+                    solicitação...':'Salvar solicitação de correção'}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modalLoading" tabindex="-1">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <br>
+                    <b>Salvando solicitação</b>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.row -->
+<!-- END CUSTOM TABS -->
+<!-- START PROGRESS BARS -->
+
+<!-- 
+    <div class="col-12">
+        <div class="card card-localidade">
+            <div class="card-header">
+                <h3 class="card-title">{{localidade.nome}}</h3>
+                <div class="card-tools">
+                    <span class="badge badge-primary">{{localidade.statusString}}</span>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                            class="fas fa-minus"></i></button>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col fotos-panoramicas">
+                            <div class="row  d-flex justify-content-center">
+                                <div class="col s12">
+                                    <h4>Fotos Panorâmicas</h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col ">
+                                    <div *ngIf="localidade.panoramica" class=" d-flex justify-content-center">
+                                        <img [src]="localidade.panoramica" alt="">
+                                    </div>
+                                    <div *ngIf="!localidade.panoramica" class=" d-flex justify-content-center">
+                                        <h5>Ainda não foram registradas fotos panorâmicas para essa localidade</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h4>Relatório</h4>
+                            <div *ngIf="localidade.relatorio" class=" d-flex justify-content-center">
+                                <img [src]="localidade.relatorio" alt="">
+                            </div>
+                            <p class="observacoes">
+                                <b>Observações: </b>
+                                {{localidade.observacoes?localidade.observacoes:'Sem observações'}}
+                            </p>
+                            <p class="observacoes" *ngIf="localidade.finalizadoPor">
+                                <b>Responsável: </b>
+                                {{localidade.finalizadoPor}}
+                            </p>
+                            <div *ngIf="!localidade.relatorio" class=" d-flex justify-content-center">
+                                <h5>Essa localidade não foi finalizada, portanto não possui relatório</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                The footer of the card
+            </div>
+
+        </div>
+    </div>
+</div> -->

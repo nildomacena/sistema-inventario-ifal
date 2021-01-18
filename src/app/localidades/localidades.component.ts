@@ -5,6 +5,8 @@ import { Bem } from '../model/bem.model';
 import { FireService } from '../services/fire.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { RouterService } from '../services/router.service';
+import { UtilService } from '../services/util.service';
 declare var jQuery: any;
 
 @Component({
@@ -17,7 +19,14 @@ export class LocalidadesComponent implements OnInit {
   loading: boolean = false;
   localidades: Array<Localidade> = [];
   localidadesSalvas: Array<Localidade> = [];
-  constructor(private papa: Papa, private fireService: FireService, private toastr: ToastrService, private router: Router) {
+  nomeNovaLocalidade: string;
+  constructor(
+    private papa: Papa,
+    private fireService: FireService,
+    private toastr: ToastrService,
+    private router: Router,
+    private routerService: RouterService,
+    private utilService: UtilService) {
     this.fireService.getLocalidades().then(localidades => {
       this.localidades = localidades;
       console.log(this.localidades)
@@ -30,7 +39,8 @@ export class LocalidadesComponent implements OnInit {
 
   goToLocalidade(localidade) {
     console.log('goToLocalidade');
-    this.router.navigateByUrl('localidade-detail', { state: { localidade: localidade } })
+    this.routerService.setLocalidade(localidade);
+    this.router.navigateByUrl('localidade-detail');
   }
 
 
@@ -76,6 +86,30 @@ export class LocalidadesComponent implements OnInit {
       }
     }); */
   }
+
+  async cadastrarNovaLocalidade() {
+    if (this.nomeNovaLocalidade.length <= 3) {
+      alert('Preencha o nome da localidade corretamente.')
+      return;
+    }
+    if ((this.localidades.filter(l => {
+      return l.nome.toLocaleLowerCase() == this.nomeNovaLocalidade.toLocaleLowerCase();
+    })).length > 0) {
+      alert('Já existe uma localidade cadastrada com esse nome')
+    }
+    try {
+      this.loading = true;
+      this.localidades = await this.fireService.cadastraLocalidade(this.nomeNovaLocalidade);
+      this.nomeNovaLocalidade = '';
+      this.utilService.toastrSucesso();
+
+    } catch (error) {
+      this.utilService.toastrErro('Erro durante o cadastro', 'Ocorreu o seguinte erro durante o cadastro: ' + error);
+      console.error(error);
+    }
+    this.loading = false;
+  }
+
   async salvarDados() {
     console.log('salvarDados')
     if (confirm('Deseja realmente salvar esses dados? Uma vez salvos, os cadastros anteriores serão apagados')) {

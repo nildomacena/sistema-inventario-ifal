@@ -21,6 +21,9 @@ import { PerfisComponent } from './perfis/perfis.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { LocalidadesComponent } from './localidades/localidades.component';
 import { LocalidadeDetailComponent } from './localidade-detail/localidade-detail.component';
+import { BemDetailComponent } from './bem-detail/bem-detail.component';
+import { NgxMaskModule } from 'ngx-mask';
+import { AjustesComponent } from './ajustes/ajustes.component';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDAzyzGNmKJO23hOgq7PXNmCSraJw9Xhkc",
@@ -44,7 +47,9 @@ const firebaseConfig = {
     PerfisComponent,
     UsuariosComponent,
     LocalidadesComponent,
-    LocalidadeDetailComponent
+    LocalidadeDetailComponent,
+    BemDetailComponent,
+    AjustesComponent
   ],
   imports: [
     BrowserModule,
@@ -56,7 +61,7 @@ const firebaseConfig = {
     AngularFireAuthModule,
     ToastrModule.forRoot(),
     BrowserAnimationsModule,
-    
+    NgxMaskModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent]

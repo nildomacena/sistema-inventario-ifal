@@ -18,7 +18,7 @@ export class AuthGuard implements CanActivate {
     return this.fireService.usuarioEAdmin().then(eAdmin => {
       if (eAdmin)
         return true;
-      else{
+      else {
         console.log('else')
         this.router.navigate(['perfil'])
         return false;

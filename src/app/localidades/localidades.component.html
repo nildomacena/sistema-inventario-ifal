@@ -30,7 +30,8 @@
                                 <!-- <td><a
                                         href="pages/examples/invoice.html">{{localidade.codigo? localidade.codigo: 'Sem código'}}</a>
                                 </td> -->
-                                <td><a class="link-localidade" style="cursor: pointer;" (click)="goToLocalidade(localidade)">{{localidade.nome}}</a></td>
+                                <td><a class="link-localidade" style="cursor: pointer;"
+                                        (click)="goToLocalidade(localidade)">{{localidade.nome}}</a></td>
                                 <!-- <span class="badge badge-warning">Pending</span> -->
                                 <td><span
                                         [ngClass]="{'badge-danger': localidade.status == 0, 'badge-warning': localidade.status == 1, 'badge-success': localidade.status == 2}"
@@ -94,17 +95,50 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer clearfix">
-                <button [disabled]="loading" href="javascript:void(0)" class="btn btn-sm btn-info float-left">Cadastrar
+                <button [disabled]="loading" href="javascript:void(0)" data-toggle="modal"
+                    data-target="#modal-nova-localidade" class="btn btn-sm btn-info float-left">Cadastrar
                     nova Localidade</button>
-                <button [disabled]="loading" href="javascript:void(0)" class="btn btn-sm btn-secondary float-right"
+                <!-- <button [disabled]="loading" href="javascript:void(0)" class="btn btn-sm btn-secondary float-right"
                     data-toggle="modal" data-target="#modal-default">Carregar arquivo CSV do
                     Sipac</button>
-                <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span></button> -->
             </div>
             <!-- /.card-footer -->
         </div>
     </div>
+</div>
+
+<div class="modal fade" id="modal-nova-localidade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Arquivo CSV</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="nomeNovaLocalidade">Nome da nova localidade</label>
+                            <input type="text" class="form-control" id="nomeNovaLocalidade"
+                                [(ngModel)]="nomeNovaLocalidade">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" [disabled]="loading" class="btn btn-primary"
+                    (click)="cadastrarNovaLocalidade()">Salvar
+                    Dados</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
 </div>
 
 <div class="modal fade" id="modal-default">

@@ -11,13 +11,17 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  signup: boolean = true;
+  signup: boolean = false;
   campi: Array<Campus> = [];
   formLogin: FormGroup;
   formSignup: FormGroup;
   carregando: boolean;
 
-  constructor(private fireService: FireService, private formBuilder: FormBuilder, private toastr: ToastrService, private router: Router) {
+  constructor(
+    private fireService: FireService,
+    private formBuilder: FormBuilder,
+    private toastr: ToastrService,
+    private router: Router) {
     this.initForms();
   }
 

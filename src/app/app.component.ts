@@ -16,8 +16,10 @@ export class AppComponent {
   constructor(private fireService: FireService, private router: Router, private toastr: ToastrService) {
     this.fireService.auth.onAuthStateChanged(user => {
       this.user = user;
+      console.log(this.user);
       this.fireService.getUsuario(user.uid).subscribe(usuario => {
         this.usuario = usuario;
+        console.log(this.usuario);
       })
     });
   }

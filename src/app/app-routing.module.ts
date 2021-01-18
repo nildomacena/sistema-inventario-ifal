@@ -8,6 +8,8 @@ import { PerfisComponent } from './perfis/perfis.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { LocalidadesComponent } from './localidades/localidades.component';
 import { LocalidadeDetailComponent } from './localidade-detail/localidade-detail.component';
+import { BrowserModule } from '@angular/platform-browser';
+import { BemDetailComponent } from './bem-detail/bem-detail.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToHome = () => redirectLoggedInTo(['home']);
@@ -19,6 +21,7 @@ const routes: Routes = [
   { path: 'papeis', component: PerfisComponent, canActivate: [AuthGuard] },
   { path: 'perfis', component: PerfisComponent, canActivate: [AngularFireAuthGuard] },
   { path: 'usuarios', component: UsuariosComponent, canActivate: [AngularFireAuthGuard] },
+  { path: 'bem-detail', component: BemDetailComponent, canActivate: [AuthGuard] },
   { path: 'localidades', component: LocalidadesComponent, canActivate: [AuthGuard] },
   { path: 'localidade-detail', component: LocalidadeDetailComponent, canActivate: [AuthGuard] },
 
@@ -28,7 +31,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes), BrowserModule,],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

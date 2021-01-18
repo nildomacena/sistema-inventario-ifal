@@ -1,1 +1,84 @@
-<p>usuarios works!</p>
+<div style="height: 100%;" class="container" *ngIf="!usuarios">
+    <h3 class="text-center">Carregando dados...</h3>
+</div>
+
+<div style="height: 100%;" class="container" *ngIf="usuarios?.length == 0">
+    <h3 class="text-center">Não há usuários cadastrados</h3>
+    <div class="row" style="margin-top: 30px;">
+        <button data-toggle="modal" data-target="#modalPreCadastro" type="button"
+            class="col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4 btn btn-primary">{{salvando?'Salvando dados...':'Realizar pré-cadastro
+            de usuário'}}</button>
+    </div>
+</div>
+
+<div class="container" style="padding-top: 20px; padding-bottom: 20px;" *ngIf="usuarios?.length > 0">
+    <h3 class="text-center">Usuários cadastrados</h3>
+    <ul class="list-group col-sm-12 col-md-8 offset-md-2">
+        <li class="list-group-item" style="line-height: 12px;" *ngFor="let usuario of usuarios">
+            <h5 class="mb-1">{{usuario.nome}}</h5>
+            <div class="row">
+                <div class="col-8" style="margin-top: 10px;">
+                    <p>SIAPE: {{usuario.siape}}</p>
+                    <p>CPF: {{usuario.cpf | mask: '000.000.000-00'}}</p>
+                    <small>{{usuario.status}}</small>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn btn-danger btn-sm" (click)="excluirPreCadastro(usuario)">Excluir
+                        Usuário</button>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <div class="row" style="margin-top: 30px;">
+        <button data-toggle="modal" data-target="#modalPreCadastro" type="button"
+            class="col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4 btn btn-primary">{{salvando?'Salvando dados...':'Realizar pré-cadastro
+            de usuário'}}</button>
+    </div>
+</div>
+
+
+<div class="modal" id="modalPreCadastro" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Pré-cadastro de usuário</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="formPreCadastro">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="nome">Nome completo</label>
+                                <input type="text" class="form-control" id="nome" formControlName="nome">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="cpf">CPF</label>
+                                <input type="text" mask="000.000.000-00" [validation]="true" class="form-control"
+                                    id="cpf" formControlName="cpf">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label (click)="consolee()" for="siape">Matrícula SIAPE</label>
+                                <input type="text" class="form-control" id="siape" formControlName="siape">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button (click)="salvarPreCadastro()" type="button" class="btn btn-primary"
+                    [disabled]="formPreCadastro.invalid || salvando">{{salvando? 'Salvando dados...':'Salvar'}}
+                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>

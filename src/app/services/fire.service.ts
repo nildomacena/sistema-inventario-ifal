@@ -1,16 +1,21 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentChangeAction } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { Action, DocumentChangeAction, DocumentData, DocumentSnapshot } from '@angular/fire/firestore/interfaces';
+import { AngularFireStorage } from '@angular/fire/storage';
 import * as campusFactory from '../model/campus.model';
 import { Observable, timer, pipe } from 'rxjs';
-import { map, first } from 'rxjs/operators';
+import { map, first, mergeMap, flatMap } from 'rxjs/operators';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { User } from 'firebase';
 import { Usuario } from '../model/usuario.model';
 import * as usuarioFactory from '../model/usuario.model';
 import { Localidade } from '../model/localidade.model';
 import * as localidadeFactory from '../model/localidade.model';
+import * as bemFactory from '../model/bem.model';
 
 import * as firebase from 'firebase';
+import { Bem } from '../model/bem.model';
+import { Correcao } from '../model/correcao.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,19 +27,19 @@ export class FireService {
   $localidades: Observable<Localidade[]>;
   campi: Array<campusFactory.Campus>;
   localidades: Localidade[];
-  constructor(private firestore: AngularFirestore, public auth: AngularFireAuth) {
+  constructor(private firestore: AngularFirestore, public auth: AngularFireAuth, public storage: AngularFireStorage) {
     this.$user = this.auth.user;
+
+
+    //Testando nova função de ouvir Observable do usuário
+    this.authState().subscribe((usuario: Usuario) => {
+      console.log(usuario);
+    });
 
     this.auth.user.pipe(map(user => {
       this.$usuario = this.getUsuario(user.uid);
     }));
 
-    this.auth.onAuthStateChanged(user => {
-      this.user = user;
-      if (user) {
-
-      }
-    });
 
     this.firestore.collection('campi').snapshotChanges().subscribe(snapshot => {
       let campi: Array<campusFactory.Campus> = [];
@@ -43,6 +48,14 @@ export class FireService {
       });
       this.campi = campi
     });
+  }
+
+  authState(): Observable<Usuario> {
+    return this.auth.authState.pipe(flatMap((user) => {
+      if (!user)
+        return null;
+      return this.getUsuario(user.uid);
+    }));
   }
 
   sleep(ms) {
@@ -61,6 +74,10 @@ export class FireService {
     return this.auth.signInWithEmailAndPassword(email, senha);
   }
 
+  logout(): Promise<void> {
+    return this.auth.signOut();
+  }
+
   async criarUsuario(email: string, senha: string, nome: string, campus: campusFactory.Campus): Promise<any> {
     if (!email.includes('@ifal.edu.br'))
       return Promise.reject('email-nao-institucional');
@@ -74,11 +91,11 @@ export class FireService {
     });
   }
 
+  /**FIM AUTENTICAÇÃO */
 
-  /** Usuários */
+  /** USUÁRIOS */
 
   getUsuario(uid: string): Observable<Usuario> {
-
     return this.firestore.doc(`usuarios/${uid}`).snapshotChanges().pipe(map(snapshotUser => {
       let usuario: Usuario;
       let campus: campusFactory.Campus;
@@ -94,6 +111,40 @@ export class FireService {
 
   }
 
+  async getUsuarioAsPromise(): Promise<Usuario> {
+    return this.getUsuario((await this.auth.currentUser).uid).pipe(first()).toPromise();
+  }
+
+
+  async getUsuarioCadastrados(): Promise<Usuario[]> {
+    let usuario: Usuario = await this.getUsuarioAsPromise();
+    let querySnapshot = await this.firestore.collection('usuarios', ref => ref.where('campusId', '==', usuario.campus.id)).get().pipe(first()).toPromise();
+    return querySnapshot.docs.map(snapshot => {
+      return usuarioFactory.fromDocumentSnapshot(snapshot);
+    });
+  }
+
+
+  async salvarPreCadastro(nome: string, cpf: string, siape: string): Promise<Usuario[]> {
+    let usuario = await this.getUsuario((await this.auth.currentUser).uid).pipe(first()).toPromise();
+    await this.firestore.collection('usuarios').add({
+      campus: usuario.campus.asObject,
+      campusId: usuario.campus.id,
+      nome: nome,
+      cpf: cpf,
+      siape: siape,
+      confirmado: false,
+      dataPreCadastro: firebase.firestore.FieldValue.serverTimestamp(),
+      papel: 'padrao'
+    });
+    return this.getUsuarioCadastrados();
+  }
+
+  async excluirPreCadastro(usuario: Usuario): Promise<Usuario[]> {
+    await this.firestore.doc(`usuarios/${usuario.documentId}`).delete();
+    return this.getUsuarioCadastrados();
+  }
+
   async usuarioEAdmin(): Promise<boolean> {
     //await timer(500).pipe(first()).toPromise();
     let user: User = await this.$user.pipe(first()).toPromise();
@@ -106,9 +157,10 @@ export class FireService {
     })).toPromise(); */
   }
 
-  logout(): Promise<void> {
-    return this.auth.signOut();
-  }
+  /**FIM USUÁRIOS */
+
+
+  /**CAMPUS */
 
   getCampi(): Observable<Array<campusFactory.Campus>> {
     return this.firestore.collection('campi').snapshotChanges().pipe(map(snapshot => {
@@ -132,10 +184,11 @@ export class FireService {
     if (usuario == null) {
       user = await this.auth.user.pipe(first()).toPromise();
       usuarioInfo = await this.firestore.doc(`usuarios/${user.uid}`).valueChanges().pipe(first()).toPromise();
-      if (usuarioInfo == 'admin')
+      if (usuarioInfo['papel'] == 'admin')
         return campusFactory.fromDocFirestore(await this.firestore.doc(`campi/${usuarioInfo['campus']['id']}`).snapshotChanges().pipe(first()).toPromise());
       else {
-        let error: Error;
+        console.log(user.uid)
+        let error: Error = new Error();
         error.name = 'nao-autorizado';
         error.message = 'O usuário não tem permissão para essa operação'
         return Promise.reject(error);
@@ -151,6 +204,21 @@ export class FireService {
         return Promise.reject(error);
       }
     }
+  }
+
+  async getBensCadastradosCampus(): Promise<Bem[]> {
+    let usuario: Usuario;
+    usuario = await this.getUsuario((await this.auth.currentUser).uid).pipe(first()).toPromise();
+    let bensReference = await this.firestore.collection(`campi/${usuario.campus.id}/2020/2020/bens`).snapshotChanges().pipe((first())).toPromise();
+    return bensReference.map(r => {
+      return bemFactory.fromFirebase(r.payload.doc);
+    });
+  }
+
+  async getLocalidadeById(campusId: string, localidadeId: string): Promise<Localidade> {
+    let bensReference = await this.firestore.collection(`campi/${campusId}/2020/2020/localidades/${localidadeId}/bens`, ref => ref.where('deletado', '==', false)).snapshotChanges().pipe((first())).toPromise();
+    let documentSnapshot: firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData> = await this.firestore.doc(`campi/${campusId}/2020/2020/localidades/${localidadeId}`).get().pipe(first()).toPromise();
+    return localidadeFactory.localidadeFromFirebase(documentSnapshot, bensReference);
   }
 
   async getLocalidades(): Promise<Localidade[]> {
@@ -170,6 +238,16 @@ export class FireService {
     return Promise.all(localidadeFactory.listFromFirebase(querySnapshot));
   }
 
+  async cadastraLocalidade(nome: string): Promise<Localidade[]> {
+    let campus: campusFactory.Campus = await this.getCampusPorUid();
+    await this.firestore.collection(`campi/${campus.id}/2020/2020/localidades/`).add({
+      nome: nome,
+      status: 0,
+      panoramica: '',
+      observacoes: '',
+    });
+    return this.getLocalidades();
+  }
 
   async salvarLocalidades(localidades: Localidade[]): Promise<any> {
     if (await this.usuarioEAdmin() == false)
@@ -184,6 +262,49 @@ export class FireService {
     })
     console.log('batch')
     return batch.commit();
+  }
+
+  async reabrirLocalidade(localidade: Localidade): Promise<Localidade> {
+    await this.storage.ref(`inventario2020/${localidade.campusId}/${localidade.id}/relatorio`).delete();
+    await this.firestore.doc(`campi/${localidade.campusId}/2020/2020/localidades/${localidade.id}`).update({
+      panoramica: '',
+      status: 1,
+      reabertoEm: firebase.firestore.FieldValue.serverTimestamp(),
+      reabertoPor: this.user.uid
+    });
+    return this.getLocalidadeById(localidade.campusId, localidade.id);
+  }
+
+  async solicitarCorrecao(localidade: Localidade, bem: Bem, motivo: string): Promise<any> {
+    await this.firestore.collection(`campi/${localidade.campusId}/2020/2020/correcoes`).add({
+      motivo: motivo,
+      bemId: bem.id,
+      bemDescricao: bem.descricao,
+      bemPatrimonio: bem.patrimonio ?? "",
+      localidadeId: localidade.id,
+      localidadeNome: localidade.nome
+    });
+  }
+
+  async getCorrecoes() {
+    //this.auth
+  }
+
+  /**BEM */
+  async excluirBem(bem: Bem): Promise<Localidade> {
+    let bensReference;
+    await this.storage.ref(`inventario2020/${bem.campusId}/${bem.localidadeId}/bens/${bem.id}`).delete().pipe((first())).toPromise();
+    await this.firestore.doc(`campi/${bem.campusId}/2020/2020/localidades/${bem.localidadeId}/bens/${bem.id}`).delete();
+    return this.getLocalidadeById(bem.campusId, bem.localidadeId);
+    /* bensReference = await this.firestore.collection(`campi/${bem.campusId}/2020/2020/localidades/${bem.localidadeId}/bens`).snapshotChanges().pipe((first())).toPromise();
+    let documentSnapshot: firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData> = await this.firestore.doc(`campi/${bem.campusId}/2020/2020/localidades/${bem.localidadeId}`).get().pipe(first()).toPromise();
+    return localidadeFactory.localidadeFromFirebase(documentSnapshot, bensReference) */
+  }
+
+  async alterarBem(bem: Bem): Promise<Localidade> {
+    await this.firestore.doc(`campi/${bem.campusId}/2020/2020/localidades/${bem.localidadeId}/bens/${bem.id}`).update(bem.asObject);
+    console.log(bem)
+    return this.getLocalidadeById(bem.campusId, bem.localidadeId);
   }
 
 }
