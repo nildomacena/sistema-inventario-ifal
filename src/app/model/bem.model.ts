@@ -21,7 +21,8 @@ export class Bem {
     semEtiqueta: boolean;
     nomeUsuario: string;
     uidUsuario: string;
-
+    aCorrigir: boolean;
+    
     constructor(
         id: string,
         bemParticular: boolean,
@@ -37,7 +38,8 @@ export class Bem {
         patrimonio: string,
         semEtiqueta: boolean,
         nomeUsuario: string,
-        uidUsuario: string
+        uidUsuario: string,
+        aCorrigir: boolean
     ) {
         this.id = id;
         this.patrimonio = patrimonio;
@@ -54,6 +56,7 @@ export class Bem {
         this.semEtiqueta = semEtiqueta;
         this.nomeUsuario = nomeUsuario ?? 'Usuário teste';
         this.uidUsuario = uidUsuario ?? 'uidusuarioteste';
+        this.aCorrigir = aCorrigir ?? false;
     }
 
     get asObject() {
@@ -71,6 +74,8 @@ export class Bem {
             campusId: this.campusId,
             imagem: this.imagem,
             localidadeId: this.localidadeId,
+            aCorrigir: this.aCorrigir,
+
         }
     }
 
@@ -106,6 +111,7 @@ export function fromFirebase(snapshot: QueryDocumentSnapshot<unknown>) {
         snapshot.data()['semEtiqueta'],
         snapshot.data()['nomeUsuario'],
         snapshot.data()['uidUsuario'],
+        snapshot.data()['aCorrigir'],
     );
 }
 
@@ -127,6 +133,7 @@ export function fromForm(formGroup: FormGroup) {
         data['semEtiqueta'],
         data['nomeUsuario'],
         data['uidUsuario'],
+        data['aCorrigir'],
     );
 }
 
@@ -140,6 +147,7 @@ export function objetoTeste() {
         '987654321',
         false,
         'Usuario teste',
-        'uidusuarioteste'
+        'uidusuarioteste',
+        false
     );
 }

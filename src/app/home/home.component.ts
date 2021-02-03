@@ -17,9 +17,9 @@ export class HomeComponent implements OnInit {
   semEtiqueta: string;
   emUso: string;
   ocioso: string;
-  danificado:string;
-  desfazimento:string;
-  particular:string;
+  danificado: string;
+  desfazimento: string;
+  particular: string;
   constructor(private fireService: FireService, private router: Router) {
     this.fireService.getLocalidades().then(localidades => {
       this.localidades = localidades;
@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit {
   get localidadesVisitadas(): string {
     let visitadas: number = 0;
     this.localidades.forEach(l => {
-      if (l.status == 2 || l.bens.length > 0 || l.panoramica)
+      if (l.status == 2 || l.status == 1 || l.bens.length > 0 || (l.panoramica && l.panoramica.length > 0))
         visitadas++;
     })
     return ((visitadas / this.localidades.length) * 100).toFixed(2);

@@ -196,7 +196,9 @@
             <div class="modal-footer" *ngIf="!corrigir">
                 <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button> -->
                 <button type="button" class="btn btn-danger" (click)="excluirBem()">Excluir Bem</button>
-                <button type="button" class="btn btn-warning" (click)="toggleCorrecao()">Solicitar correção</button>
+                <button type="button" [disabled]="bemSelecionado.aCorrigir" class="btn btn-warning"
+                    (click)="toggleCorrecao()">{{bemSelecionado.aCorrigir?'Já há uma solicitação de correção':'Solicitar
+                    correção'}}</button>
                 <button type="button" class="btn btn-info" (click)="editarBem()" data-dismiss="modal"
                     aria-label="Close">Editar Bem</button>
             </div>

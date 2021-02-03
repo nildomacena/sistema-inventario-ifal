@@ -82,9 +82,11 @@ export class LocalidadeDetailComponent implements OnInit {
     }
     this.salvando = true;
     try {
-      await this.fireService.solicitarCorrecao(this.localidade, this.bemSelecionado, this.motivoCorrecao);
+      this.localidade.bens = await this.fireService.solicitarCorrecao(this.localidade, this.bemSelecionado, this.motivoCorrecao);
       this.utilService.toastrSucesso('Sucesso!', 'Solicitação de correção foi enviada')
       jQuery('#modalBem').modal('toggle');
+      this.motivoCorrecao = '';
+      this.corrigir = false;
     } catch (error) {
       this.utilService.toastrErro();
     }

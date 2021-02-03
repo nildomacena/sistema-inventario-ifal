@@ -1,0 +1,4 @@
+Implementar uma função que, ao solicitar uma correção, atualiza o cadastro do bem alterando
+o valor "aCorrigir" para true
+
+Implmentar uma função que, ao atender uma correção no bem, apaga a solicitação de correção

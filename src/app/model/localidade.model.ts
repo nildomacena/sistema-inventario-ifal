@@ -80,39 +80,6 @@ export function fromFirebase(snapshot: Action<DocumentSnapshot<unknown>>, campus
 } 
  */
 
-export function objetoTeste(): Localidade {
-
-    return new Localidade(
-        'CEjM5Y3DyCLBTzb3INnP',
-        'Departamento de Administração', 2, [
-        new Bem('DUC58YIOn3PL0fQLM3ch', false, 'xQvvY7xXGWLIB4Eoj3HI', false, 'Monitor', 'em_uso',
-            'https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6237/6237639_sd.jpg',
-            false,
-            'CEjM5Y3DyCLBTzb3INnP',
-            '',
-            'Sem observações',
-            '987654321',
-            false,
-            'Usuario teste',
-            'uidusuarioteste'
-        ),
-        new Bem('DUC58YIOn3PL0fQLM3ch', false, 'xQvvY7xXGWLIB4Eoj3HI', false, 'CPU DELL', 'em_uso',
-            'https://http2.mlstatic.com/pc-cpu-gamer-asuscore-i5-9400f16gb-ddr4ssd240gtx1050-4gb-D_Q_NP_918705-MLB33074064682_122019-F.webp',
-            false,
-            'CEjM5Y3DyCLBTzb3INnP',
-            '',
-            'Sem observações',
-            '987654321',
-            false,
-            'Usuario teste',
-            'uidusuarioteste'
-        )
-    ],
-        'https://firebasestorage.googleapis.com/v0/b/inventario-ifal.appspot.com/o/inventario2020%2FxQvvY7xXGWLIB4Eoj3HI%2FCEjM5Y3DyCLBTzb3INnP?alt=media&token=9f910ad5-5d28-4f7f-b35f-d17d559d72e4',
-        'https://firebasestorage.googleapis.com/v0/b/inventario-ifal.appspot.com/o/inventario2020%2FxQvvY7xXGWLIB4Eoj3HI%2FCEjM5Y3DyCLBTzb3INnP?alt=media&token=9f910ad5-5d28-4f7f-b35f-d17d559d72e4');
-
-}
-
 export async function localidadeFromFirebase(snapshot: firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>, bens: DocumentChangeAction<unknown>[]) {
     const data = snapshot.data();
     let bensArray = [];
