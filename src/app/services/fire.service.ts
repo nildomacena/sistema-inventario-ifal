@@ -16,6 +16,8 @@ import * as bemFactory from '../model/bem.model';
 import * as firebase from 'firebase';
 import { Bem } from '../model/bem.model';
 import { Correcao } from '../model/correcao.model';
+import * as correcaoFactory from '../model/correcao.model';
+
 import { query } from '@angular/animations';
 
 @Injectable({
@@ -276,6 +278,7 @@ export class FireService {
     return this.getLocalidadeById(localidade.campusId, localidade.id);
   }
 
+  /**CORREÇÕES */
   async solicitarCorrecao(localidade: Localidade, bem: Bem, motivo: string): Promise<Bem[]> {
     await this.firestore.collection(`campi/${localidade.campusId}/2020/2020/correcoes`).add({
       motivo: motivo,
@@ -290,8 +293,12 @@ export class FireService {
     return querySnapshot.docs.map(s => bemFactory.fromFirebase(s));
   }
 
-  async getCorrecoes() {
-    //this.auth
+  async getCorrecoes(): Promise<Correcao[]> {
+    let usuario: Usuario = await this.getUsuarioAsPromise();
+    let correcoes = (await this.firestore.collection(`campi/${usuario.campus.id}/2020/2020/correcoes`).get().pipe(first()).toPromise()).docs.map(c => {
+      return correcaoFactory.fromCollectionFirestore(c)
+    })
+    return correcoes;
   }
 
   /**BEM */

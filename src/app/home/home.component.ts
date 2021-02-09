@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { Localidade } from '../model/localidade.model';
 import { Router } from '@angular/router';
 import { Bem } from '../model/bem.model';
+import { Correcao } from '../model/correcao.model';
 
 @Component({
   selector: 'app-home',
@@ -20,12 +21,15 @@ export class HomeComponent implements OnInit {
   danificado: string;
   desfazimento: string;
   particular: string;
+  correcoes: Correcao[];
   constructor(private fireService: FireService, private router: Router) {
     this.fireService.getLocalidades().then(localidades => {
       this.localidades = localidades;
       console.log(this.localidades)
     });
-
+    this.fireService.getCorrecoes().then(correcoes => {
+      this.correcoes = correcoes;
+    });
     this.fireService.getBensCadastradosCampus().then(bens => {
       this.bens = bens;
       this.semEtiqueta = ((this.bens.filter(bem => bem.semEtiqueta).length / this.bens.length) * 100).toFixed(0) + '%'
