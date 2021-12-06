@@ -25,6 +25,7 @@ import { query } from '@angular/animations';
 })
 export class FireService {
   user: User;
+  usuario: Usuario;
   $usuario: Observable<Usuario>;
   $user: Observable<User>;
   $localidades: Observable<Localidade[]>;
@@ -115,7 +116,8 @@ export class FireService {
   }
 
   async getUsuarioAsPromise(): Promise<Usuario> {
-    return this.getUsuario((await this.auth.currentUser).uid).pipe(first()).toPromise();
+    this.usuario = await this.getUsuario((await this.auth.currentUser).uid).pipe(first()).toPromise();
+    return this.usuario;
   }
 
 
@@ -218,6 +220,24 @@ export class FireService {
     });
   }
 
+  async getTotalBensSIPAC(): Promise<number> {
+    let usuario: Usuario;
+    usuario = this.usuario ?? await this.getUsuario((await this.auth.currentUser).uid).pipe(first()).toPromise();
+    let snapshot = await this.firestore.collection('campi').doc(usuario.campus.id).collection('2020').doc('2020').get().pipe(first()).toPromise()
+    console.log(snapshot.data())
+    if (!snapshot.data()['totalBensSIPAC']) {
+      return 0;
+    }
+    return +snapshot.data()['totalBensSIPAC'];
+  }
+
+  async setTotalBensSIPAC(totalBensSIPAC: number): Promise<number> {
+    let usuario: Usuario;
+    usuario = this.usuario ?? await this.getUsuario((await this.auth.currentUser).uid).pipe(first()).toPromise();
+    await this.firestore.collection('campi').doc(usuario.campus.id).collection('2020').doc('2020').update({ totalBensSIPAC: totalBensSIPAC });
+    return totalBensSIPAC;
+  }
+
   async getLocalidadeById(campusId: string, localidadeId: string): Promise<Localidade> {
     let bensReference = await this.firestore.collection(`campi/${campusId}/2020/2020/localidades/${localidadeId}/bens`, ref => ref.where('deletado', '==', false)).snapshotChanges().pipe((first())).toPromise();
     let documentSnapshot: firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData> = await this.firestore.doc(`campi/${campusId}/2020/2020/localidades/${localidadeId}`).get().pipe(first()).toPromise();
@@ -318,4 +338,47 @@ export class FireService {
     return this.getLocalidadeById(bem.campusId, bem.localidadeId);
   }
 
+
+
+  /**FUNÇÕES DE TESTE */
+
+  async gerarRegistros(qtd: number): Promise<any> {
+    if (qtd > 100)
+      return;
+    let promises: Promise<any>[] = [];
+    let usuario = await this.getUsuarioAsPromise()
+    for (let i = 0; i < qtd; i++) {
+      promises.push(this.firestore.collection(`campi/${usuario.campus.id}/2020/2020/localidades/LeMbYn11AWE3djnS4ovF/bens`).add({
+        aCorrigir: false,
+        bemParticular: false,
+        campusId: "LeMbYn11AWE3djnS4ovF",
+        deletado: false,
+        descricao: "Descrição bem teste",
+        estadoBem: "uso",
+        indicaDesfazimento: false,
+        localidadeId: "IGfnUXG7ZvcOhxhAoABJ",
+        nomeUsuario: "Teste",
+        numeroSerie: "123456",
+        observacoes: "Sem observações",
+        patrimonio: "126"
+      }));
+      console.log(this.usuario.campus.id)
+      promises.push(this.firestore.collection(`campi/${usuario.campus.id}/2020/2020/bens`).add({
+        aCorrigir: false,
+        bemParticular: false,
+        campusId: "LeMbYn11AWE3djnS4ovF",
+        deletado: false,
+        descricao: "Descrição bem teste",
+        estadoBem: "uso",
+        indicaDesfazimento: false,
+        localidadeId: "IGfnUXG7ZvcOhxhAoABJ",
+        nomeUsuario: "Teste",
+        numeroSerie: "123456",
+        observacoes: "Sem observações",
+        patrimonio: "126"
+      }))
+      promises.push(this.firestore.collection(`campi/${usuario.campus.id}/2020/2020/bens`).get().pipe(first()).toPromise())
+    }
+    return Promise.all(promises);
+  }
 }

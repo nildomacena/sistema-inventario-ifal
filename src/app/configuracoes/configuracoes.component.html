@@ -1,0 +1,28 @@
+<div class="container">
+    <div class="row" style="padding-top: 20px;">
+        <div class="col">
+            <h2>Configurações</h2>
+            <hr>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h4>Total de bens (via SIPAC): {{totalBensSIPAC == null? 'Carregando':totalBensSIPAC?totalBensSIPAC: 'Não
+                Informado' }}</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col" style="padding-top: 15px;">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="totalBens" class="sr-only">Total de bens</label>
+                    <input type="number" [(ngModel)]="novoTotalBens" class="form-control" id="totalBens"
+                        placeholder="Total de bens" [ngModelOptions]="{standalone: true}">
+                </div>
+                <button type="button" class="btn btn-primary" style="margin-left: 10px;" (click)="salvarTotal()"
+                    [disabled]="salvando || !novoTotalBens">{{salvando? 'Salvando dados...': 'Alterar Quantidade de
+                    Bens'}}</button>
+            </form>
+        </div>
+    </div>
+</div>

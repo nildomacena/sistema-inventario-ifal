@@ -22,6 +22,9 @@ export class HomeComponent implements OnInit {
   desfazimento: string;
   particular: string;
   correcoes: Correcao[];
+  totalBensSIPAC: number;
+  totalBensConcluido: string;
+
   constructor(private fireService: FireService, private router: Router) {
     this.fireService.getLocalidades().then(localidades => {
       this.localidades = localidades;
@@ -29,6 +32,9 @@ export class HomeComponent implements OnInit {
     });
     this.fireService.getCorrecoes().then(correcoes => {
       this.correcoes = correcoes;
+    });
+    this.fireService.getTotalBensSIPAC().then(total => {
+      this.totalBensSIPAC = total;
     });
     this.fireService.getBensCadastradosCampus().then(bens => {
       this.bens = bens;
@@ -38,7 +44,7 @@ export class HomeComponent implements OnInit {
       this.danificado = ((this.bens.filter(bem => bem.estadoBem == 'danificado').length / this.bens.length) * 100).toFixed(0) + '%'
       this.desfazimento = ((this.bens.filter(bem => bem.indicaDesfazimento).length / this.bens.length) * 100).toFixed(0) + '%'
       this.particular = ((this.bens.filter(bem => bem.bemParticular).length / this.bens.length) * 100).toFixed(0) + '%'
-
+      this.totalBensConcluido = ((this.bens.length / this.totalBensSIPAC) * 100).toFixed(2) + '%'
     });
 
     this.fireService

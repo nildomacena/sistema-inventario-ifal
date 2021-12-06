@@ -10,6 +10,8 @@ import { LocalidadesComponent } from './localidades/localidades.component';
 import { LocalidadeDetailComponent } from './localidade-detail/localidade-detail.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { BemDetailComponent } from './bem-detail/bem-detail.component';
+import { ConfiguracoesComponent } from './configuracoes/configuracoes.component';
+import { TestesComponent } from './testes/testes.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToHome = () => redirectLoggedInTo(['home']);
@@ -24,6 +26,8 @@ const routes: Routes = [
   { path: 'bem-detail', component: BemDetailComponent, canActivate: [AuthGuard] },
   { path: 'localidades', component: LocalidadesComponent, canActivate: [AuthGuard] },
   { path: 'localidade-detail', component: LocalidadeDetailComponent, canActivate: [AuthGuard] },
+  { path: 'configuracoes', component: ConfiguracoesComponent, canActivate: [AuthGuard] },
+  { path: 'testes', component: TestesComponent },
 
 
   /* { path: 'home', component: HomeComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } } */

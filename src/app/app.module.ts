@@ -24,6 +24,8 @@ import { LocalidadeDetailComponent } from './localidade-detail/localidade-detail
 import { BemDetailComponent } from './bem-detail/bem-detail.component';
 import { NgxMaskModule } from 'ngx-mask';
 import { AjustesComponent } from './ajustes/ajustes.component';
+import { ConfiguracoesComponent } from './configuracoes/configuracoes.component';
+import { TestesComponent } from './testes/testes.component';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDAzyzGNmKJO23hOgq7PXNmCSraJw9Xhkc",
@@ -49,7 +51,9 @@ const firebaseConfig = {
     LocalidadesComponent,
     LocalidadeDetailComponent,
     BemDetailComponent,
-    AjustesComponent
+    AjustesComponent,
+    ConfiguracoesComponent,
+    TestesComponent
   ],
   imports: [
     BrowserModule,

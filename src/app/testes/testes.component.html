@@ -1,0 +1,19 @@
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3>Registros salvos no banco: {{numRegistros}}</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-3">
+            <div class="form-group">
+                <label for="patrimonio">Quantidade de Operações</label>
+                <input type="number" class="form-control" id="patrimonio" [(ngModel)]="numOperacoes">
+            </div>
+        </div>
+        <div class="col-xl-2" style="padding-top: 31px;">
+            <button type="button" [disabled]="salvando" class="btn btn-warning" (click)="gerarRegistros()">{{salvando?
+                'Salvando dados...': 'Gerar Registros'}}</button>
+        </div>
+    </div>
+</div>
