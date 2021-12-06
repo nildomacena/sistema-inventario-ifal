@@ -1,27 +1,16 @@
-# InventarioAdmin
+# Sistema Inventário Admin
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.4.
+Esse projeto é um sistema Web utilizado para gerenciar os dados gerados pelo aplicativo Inventário IFAL.
+Desenvolvido em Angular 10
 
-## Development server
+## Servir projeto
+Para rodar o projeto, basta clonar o repositório e executar o comando npm install para instalar todas as dependências. Depois executar o comanando `ng serve` e navegar para a url http://localhost:4200/.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Prints do sistema
 
-## Code scaffolding
+![image](https://user-images.githubusercontent.com/18093955/144929485-cec68cbf-d5d6-42b3-92fe-e738a52b0952.png)
+![image](https://user-images.githubusercontent.com/18093955/144929595-85bf8bbc-793b-4932-b7f8-a4ca20246c4e.png)
+![image](https://user-images.githubusercontent.com/18093955/144929696-5e9c565e-ab84-4017-9763-02aea5359cd5.png)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
