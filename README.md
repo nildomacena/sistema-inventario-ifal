@@ -30,7 +30,8 @@ O aplicativo Inventário IFAL foi desenvolvido para que os servidores do Institu
 ## Registro dos dados no SIPAC
   Uma parte muito importante do processo de inventário é lançar os dados encontrados pelos inventariadores no sistema SIPAC (sistema utilizado para gerencia do IFAL). No processo anterior, isso era feito de forma bem rudimentar. Onde um papel com o número do patrimônio dos bens tinha que ser digitado no SIPAC.
     Já com o o sistema de Inventário, é possível gerar um pdf com os números de patrimônio de cada localidade. Dessa forma, o servidor responsável por lançar os dados, basta copiar e colar o número no SIPAC, diminuindo bastante a possibilidade de erros.
-    
+    ![image](https://user-images.githubusercontent.com/18093955/145051082-60066273-2f8a-4105-9a2b-746892aaa4a1.png)
+
 ## Prints do sistema
 
 ![image](https://user-images.githubusercontent.com/18093955/144929485-cec68cbf-d5d6-42b3-92fe-e738a52b0952.png)
