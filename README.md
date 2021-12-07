@@ -3,6 +3,8 @@
 Esse projeto é um sistema Web utilizado para gerenciar os dados gerados pelo aplicativo Inventário IFAL.
 Desenvolvido em Angular 10
 
+[Link para o projeto do aplicativo](https://github.com/nildomacena/aplicativo-inventario-ifal)
+
 ## Servir projeto
 Para rodar o projeto, basta clonar o repositório e executar o comando npm install para instalar todas as dependências. Depois executar o comanando `ng serve` e navegar para a url http://localhost:4200/.
 
